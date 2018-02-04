@@ -1,0 +1,12 @@
+{
+  "name": "AnEpicBot",
+  "version": "1.0.0",
+  "description": "This is an epic bot",
+  "main": "bot.js",
+  "author": "Mati Qlo",
+  "dependencies": {
+    "discord.js": "^11.3.0",
+    "request": "^2.83.0",
+    "winston": "^2.4.0"
+  }
+}
