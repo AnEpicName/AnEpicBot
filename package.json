@@ -5,7 +5,9 @@
   "main": "bot.js",
   "author": "Mati Qlo",
   "dependencies": {
+    "cheerio": "latest",
     "discord.js": "^11.3.0",
+    "jsonframe-cheerio": "^3.0.1",
     "request": "^2.83.0",
     "winston": "^2.4.0"
   }

@@ -1,9 +1,13 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
-const prefix = "!";
-var auth = require('./auth.json');
+let cheerio = require('cheerio');
 var request = require('request');
-var pokemonData;
+
+const prefix = "!";
+
+var auth = require('./auth.json');
+
+
 
 client.on("ready", () => {
     console.log("I am ready");
@@ -19,7 +23,38 @@ client.on("message", (message) => {
         
         case "!soy":
             message.channel.send("gay");
-            break;       
+            break;   
+            
+        case "!nextsteamsale":
+            var url = "https://www.whenisthenextsteamsale.com/";
+
+            request(url, function(error, response, html) {
+        
+                if (!error) {
+                    var $ = cheerio.load(html);
+        
+                    $('#hdnNextSale').filter(function() {
+                        var data = $(this);
+                        var sale = JSON.parse(data[0].attribs.value);
+                        console.log(sale);
+                        var remainingTimeData = sale.RemainingTime.split(".");
+                        message.channel.send(
+                            "Name:\t\t\t\t\t   " + sale.Name + "\n" +
+                            "Start Date:\t\t\t   " + sale.StartDate + "\n" +
+                            "End Date:\t\t\t\t " + sale.EndDate + "\n" +
+                            "Is Confirmed:\t\t  " + sale.IsConfirmed + "\n" +
+                            "Length:\t\t\t\t\t " + sale.Length + " days" + "\n" +
+                            "Remaining Time:\t" + remainingTimeData[0] + " days, " 
+                            + remainingTimeData[1] + " hours"
+                        );
+                    });
+                    
+                } else {
+                    console.log(error);
+                }
+                
+            });
+          
     }
 
     if (message.content.startsWith("!pokemon")) {
@@ -29,13 +64,13 @@ client.on("message", (message) => {
             if (!error && response.statusCode == 200) {
                 var pokemonData = JSON.parse(body);
                 var msg = 
-                "nombre: " + pokemonData.name +"\n" +
-                "peso: " + pokemonData.weight * .1 + "kg" + "\n" +
-                "estatura: " + pokemonData.height * .1 + "m" + "\n";
+                "Name: " + pokemonData.name +"\n" +
+                "Weight: " + pokemonData.weight * .1 + "kg" + "\n" +
+                "Height: " + pokemonData.height * .1 + "m" + "\n";
                 if (pokemonData.types[1] != null) {
-                    msg += "tipo(s): " + pokemonData.types[1].type.name + " - " + pokemonData.types[0].type.name;
+                    msg += "Type(s): " + pokemonData.types[1].type.name + " - " + pokemonData.types[0].type.name;
                 } else {
-                    msg += "tipo(s): " + pokemonData.types[0].type.name;
+                    msg += "Type(s): " + pokemonData.types[0].type.name;
                 }
                 console.log(pokemonData);
                 message.channel.send(
